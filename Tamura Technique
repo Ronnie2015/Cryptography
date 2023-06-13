@@ -1,0 +1,67 @@
+import math
+
+
+def e_calculation(a, b):
+    t = 0
+    for k in range(a, 100):
+        if math.gcd(k, b) == 1:
+            t = 1
+            return k
+
+        if t == 1:
+            k = 100
+
+
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return (g, x - (b // a) * y, y)
+
+
+def modinv(a, m_bar):
+    g, x, y = egcd(a, m_bar)
+    if g != 1:
+        raise Exception('modular inverse does not exist')
+    else:
+        return x % m_bar
+
+
+if __name__ == '__main__':
+    p = int(input("Enter the value of p:"))
+    print(p)
+    q = int(input("Enter the value of q:"))
+    print(q)
+    N = p*q
+    phi_n = (p-1)*(q-1)
+    nParty = int(input("Enter number of parties:"))
+    print(nParty)
+    m = int(input("Enter your message:"))
+    e_list = []
+    d_list = []
+    e_start = 2
+    l = 1
+    for i in range(0, nParty):
+        temp = e_calculation(e_start, phi_n)
+        temp2 = modinv(temp, phi_n)
+        e_list.append(temp)
+        d_list.append(temp2)
+        print("E:", e_list[i])
+        print("D:", d_list[i])
+        e_start = temp+1
+
+# encryption
+    for j in range(0, nParty):
+        print("Encryption phase:", j+1)
+        temp_e = int(e_list[j])
+        m = pow(m, temp_e, N)
+        print("Ciphertext: ", m)
+
+# decryption
+    for k in range(nParty-1, -1, -1):
+        print("Decryption Phase:", l)
+        plaintext = pow(m, int(d_list[k]), N)
+        m = plaintext
+        l = l+1
+        print("Plaintext: ", m)
