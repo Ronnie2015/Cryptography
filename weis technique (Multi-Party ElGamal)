@@ -1,0 +1,111 @@
+import random
+
+def Find_Generator( x, y, z ):
+    return pow(x, y, z)
+
+PRIME=input("P: ")
+p= int(PRIME)
+print (p)
+
+
+def Generator( p ):
+    p_d1 = 2
+    p_d2 = (p-1) //  p_d1
+    while( 1 ):
+        g = random.randint( 2, p-1 )
+        if not (Find_Generator( g, p_d2, p ) == 1):
+            if not Find_Generator( g, (p-1)//p_d2, p ) == 1:
+                return g
+
+            
+g=Generator( p )
+print (g)
+
+
+SECRET_KEY_1=input("X1: ")
+x1=int(SECRET_KEY_1)
+
+y1=pow(g,x1,p)
+print (y1)
+
+
+SECRET_KEY_2=input("X2: ")
+x2=int(SECRET_KEY_2)
+
+y2=pow(g,x2,p)
+print (y2)
+
+
+SECRET_KEY_3=input("X3: ")
+x3=int(SECRET_KEY_3)
+
+
+y3=pow(g,x3,p)
+print (y3)
+
+
+MESSAGE=input("M: ")
+m=int(MESSAGE)
+
+
+SECRET_VALUE_1=input("R1: ")
+r1=int(SECRET_VALUE_1)
+
+
+c11=pow(g,r1,p)
+temp_1=pow(y1,r1,p)
+temp_2=(m*temp_1)
+c12=pow(temp_2,1,p)
+print (c11)
+print (c12)
+
+
+SECRET_VALUE_2=input("R2: ")
+r2=int(SECRET_VALUE_2)
+
+
+c21=pow(g,r2,p)
+temp_1=pow(y2,r2,p)
+temp_2=(c12*temp_1)
+c22=pow(temp_2,1,p)
+print (c21)
+print (c22)
+
+
+SECRET_VALUE_3=input("R3: ")
+r3=int(SECRET_VALUE_3)
+
+
+c31=pow(g,r3,p)
+temp_1=pow(y3,r3,p)
+temp_2=(c22*temp_1)
+c32=pow(temp_2,1,p)
+print (c31)
+print (c32)
+
+
+def inverseMod(a, m):
+    for i in range(1,m):
+        if ( m*i + 1) % a == 0:
+            return ( m*i + 1) // a
+    return None
+
+
+TEMP_1=pow(c11,x1,p)
+inverse1=inverseMod(TEMP_1,p)
+RECOVERY_2=(c32*inverse1)
+d2=pow(RECOVERY_2,1,p)
+
+
+
+TEMP_2=pow(c21,x2,p)
+inverse2=inverseMod(TEMP_2,p)
+RECOVERY_1=(RECOVERY_2*inverse2)
+RECOVERY_1=pow(RECOVERY_1,1,p)
+
+
+TEMP_3=pow(c31,x3,p)
+inverse3=inverseMod(TEMP_3,p)
+RECOVERY=(RECOVERY_1*inverse3)
+RECOVERY=pow(RECOVERY,1,p)  
+print ("D:", RECOVERY)
